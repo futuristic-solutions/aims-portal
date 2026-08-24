@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIIMS Health OS - Tele-Consultations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Modern Frosted Glass Theme (Custom Aero Glass) */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+        .glass-sidebar {
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #f8fafc;
+        }
+        .glass-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.35);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden font-sans select-none bg-slate-950 text-slate-100 flex flex-col justify-between relative">
+
+    <!-- Background Accent Blurs -->
+    <div class="absolute top-10 left-10 w-96 h-96 bg-indigo-600/30 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-purple-600/25 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[150px] pointer-events-none"></div>
+
+    <!-- Header Navigation -->
+    <header class="h-9 bg-slate-900/60 backdrop-blur-xl border-b border-white/10 text-slate-300 text-xs px-5 flex justify-between items-center z-50 font-medium">
+        <div class="flex items-center space-x-6">
+            <a href="index.html" class="font-bold text-indigo-400 tracking-wide flex items-center gap-2 cursor-pointer hover:text-indigo-300 transition">
+                <i data-lucide="activity" class="w-4 h-4 text-indigo-400"></i> AIIMS HEALTH OS
+            </a>
+            <a href="index.html" class="cursor-pointer hover:text-white transition">Clinical Console</a>
+            <a href="patientdashboard.html" class="cursor-pointer hover:text-white transition">Patient Care</a>
+            <a href="teleconsults.html" class="cursor-pointer text-indigo-400 font-semibold transition">Tele-Consults</a>
+            <span class="cursor-pointer hover:text-white transition">Pharmacy Portal</span>
+            <span class="cursor-pointer hover:text-white transition">ABHA Integration</span>
+        </div>
+        <div class="flex items-center space-x-4 text-slate-400">
+            <span class="flex items-center gap-1.5 text-[11px] bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> ABHA Synchronized
+            </span>
+            <i data-lucide="wifi" class="w-3.5 h-3.5 hover:text-white cursor-pointer"></i>
+            <i data-lucide="bell" class="w-3.5 h-3.5 hover:text-white cursor-pointer"></i>
+            <span id="system-clock" class="text-slate-200 font-semibold">--:-- --</span>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 p-4 md:p-6 flex items-center justify-center overflow-hidden z-10">
+        <div class="glass-panel w-full max-w-7xl h-full max-h-[820px] rounded-3xl flex flex-col overflow-hidden shadow-2xl">
+            
+            <!-- Window Control Header -->
+            <div class="h-14 border-b border-white/10 px-6 flex items-center justify-between shrink-0 bg-slate-900/30">
+                <div class="flex items-center space-x-3">
+                    <div class="w-3 h-3 rounded-full bg-rose-500/80 cursor-pointer border border-rose-400/40 hover:scale-110 transition"></div>
+                    <div class="w-3 h-3 rounded-full bg-amber-500/80 cursor-pointer border border-amber-400/40 hover:scale-110 transition"></div>
+                    <div class="w-3 h-3 rounded-full bg-emerald-500/80 cursor-pointer border border-emerald-400/40 hover:scale-110 transition"></div>
+                    <span class="text-xs font-semibold text-slate-400 ml-2 tracking-wider uppercase flex items-center gap-2">
+                        <i data-lucide="video" class="w-4 h-4 text-indigo-400"></i> Tele-Medicine & Remote Care Center
+                    </span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="bg-indigo-500/20 text-indigo-300 text-xs px-3 py-1 rounded-full border border-indigo-500/30 font-mono flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Session Ready
+                    </span>
+                </div>
+            </div>
+
+            <div class="flex-1 flex overflow-hidden">
+                <!-- Tele-Consult Sidebar Navigation -->
+                <aside class="w-64 glass-sidebar p-5 flex flex-col justify-between shrink-0">
+                    <div class="space-y-6">
+                        <!-- Navigation Buttons -->
+                        <div class="space-y-1.5">
+                            <div class="px-3 py-1 text-[10px] uppercase font-bold tracking-widest text-slate-400">Consultation Hub</div>
+                            <button id="btn-active-call" onclick="switchTab('active-call')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium bg-indigo-600/80 text-white shadow-lg shadow-indigo-600/30 border border-indigo-400/30 transition">
+                                <i data-lucide="video" class="w-4 h-4"></i> Active Video Call
+                            </button>
+                            <button id="btn-upcoming" onclick="switchTab('upcoming')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:bg-white/5 hover:text-white transition">
+                                <i data-lucide="calendar" class="w-4 h-4"></i> Scheduled Calls
+                            </button>
+                            <button id="btn-doctors" onclick="switchTab('doctors')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:bg-white/5 hover:text-white transition">
+                                <i data-lucide="user-check" class="w-4 h-4"></i> Available Specialists
+                            </button>
+                            <button id="btn-call-history" onclick="switchTab('call-history')" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:bg-white/5 hover:text-white transition">
+                                <i data-lucide="history" class="w-4 h-4"></i> Session History
+                            </button>
+                        </div>
+                    </div>
+
+                    <a href="index.html" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-xs py-2 rounded-xl transition flex items-center justify-center gap-2">
+                        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back to Console
+                    </a>
+                </aside>
+
+                <!-- Dynamic Content Area -->
+                <section class="flex-1 p-6 overflow-y-auto">
+                    
+                    <!-- TAB 1: ACTIVE VIDEO CALL -->
+                    <div id="tab-active-call" class="tab-content active space-y-4">
+                        <div class="grid grid-cols-3 gap-4 h-[650px]">
+                            <!-- Main Video Player -->
+                            <div class="col-span-2 glass-card rounded-2xl relative overflow-hidden flex flex-col justify-between p-4 bg-slate-900/80 border border-white/10">
+                                <!-- Top Call Badge -->
+                                <div class="flex justify-between items-center z-10">
+                                    <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+                                        <span class="text-xs font-medium text-slate-200">LIVE • 14:22</span>
+                                    </div>
+                                    <div class="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-xs text-slate-300 font-medium">
+                                        Dr. Ananya Sharma (Cardiology)
+                                    </div>
+                                </div>
+
+                                <!-- Simulated Doctor Feed -->
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-600 bg-slate-950/60">
+                                    <i data-lucide="user" class="w-24 h-24 mb-2 opacity-30"></i>
+                                    <span class="text-xs text-slate-400">HD Stream Connected via AIIMS Tele-Net</span>
+                                </div>
+
+                                <!-- Picture-in-Picture Self Feed -->
+                                <div class="absolute bottom-20 right-6 w-44 h-32 rounded-xl glass-card border border-white/20 bg-slate-900/90 overflow-hidden shadow-2xl flex items-center justify-center">
+                                    <span class="text-[10px] text-slate-400 flex items-center gap-1">
+                                        <i data-lucide="camera" class="w-3 h-3"></i> Patient Feed
+                                    </span>
+                                </div>
+
+                                <!-- Video Call Controls Bar -->
+                                <div class="z-10 bg-black/50 backdrop-blur-md p-3 rounded-2xl border border-white/10 flex items-center justify-center gap-4">
+                                    <button class="p-3 bg-white/10 hover:bg-white/20 rounded-full transition text-slate-200">
+                                        <i data-lucide="mic" class="w-5 h-5"></i>
+                                    </button>
+                                    <button class="p-3 bg-white/10 hover:bg-white/20 rounded-full transition text-slate-200">
+                                        <i data-lucide="video" class="w-5 h-5"></i>
+                                    </button>
+                                    <button class="p-3 bg-white/10 hover:bg-white/20 rounded-full transition text-slate-200">
+                                        <i data-lucide="share-2" class="w-5 h-5"></i>
+                                    </button>
+                                    <button class="p-3 bg-rose-600 hover:bg-rose-500 text-white rounded-full transition shadow-lg shadow-rose-600/40 px-5 flex items-center gap-2 text-xs font-semibold">
+                                        <i data-lucide="phone-off" class="w-4 h-4"></i> End Call
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Live Consultation Notes & Chat -->
+                            <div class="glass-card rounded-2xl p-4 flex flex-col justify-between border border-white/10">
+                                <div class="border-b border-white/10 pb-3">
+                                    <h3 class="text-xs font-semibold text-slate-200 flex items-center gap-2">
+                                        <i data-lucide="message-square" class="w-4 h-4 text-indigo-400"></i> Clinical Notes & Chat
+                                    </h3>
+                                    <p class="text-[10px] text-slate-400 mt-0.5">Real-time consultation transcript</p>
+                                </div>
+
+                                <div class="flex-1 py-3 space-y-3 overflow-y-auto text-xs">
+                                    <div class="bg-white/5 p-2.5 rounded-xl border border-white/5">
+                                        <span class="text-[10px] text-indigo-400 font-semibold">Dr. Sharma</span>
+                                        <p class="text-slate-300 mt-0.5 text-[11px]">Please upload your latest BP log sheet.</p>
+                                    </div>
+                                    <div class="bg-indigo-600/20 p-2.5 rounded-xl border border-indigo-500/20 ml-4">
+                                        <span class="text-[10px] text-indigo-300 font-semibold">Patient (You)</span>
+                                        <p class="text-slate-200 mt-0.5 text-[11px]">Uploaded. Blood pressure was 120/80 this morning.</p>
+                                    </div>
+                                </div>
+
+                                <div class="pt-3 border-t border-white/10 flex gap-2">
+                                    <input type="text" placeholder="Type message..." class="glass-input flex-1 px-3 py-2 rounded-xl text-xs outline-none">
+                                    <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-xl transition">
+                                        <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 2: SCHEDULED CALLS -->
+                    <div id="tab-upcoming" class="tab-content space-y-4">
+                        <div class="glass-card p-5 rounded-2xl">
+                            <h3 class="text-xs font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                                <i data-lucide="calendar" class="w-4 h-4 text-indigo-400"></i> Upcoming Tele-Consultations
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="p-4 bg-white/5 rounded-xl flex items-center justify-between border border-white/5">
+                                    <div class="flex items-center gap-3">
+                                        <div class="p-3 bg-indigo-500/20 text-indigo-400 rounded-xl">
+                                            <i data-lucide="video" class="w-5 h-5"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs font-semibold text-slate-100">Cardiology Follow-up</div>
+                                            <div class="text-[11px] text-slate-400">Dr. Ananya Sharma • Tomorrow, 10:30 AM</div>
+                                        </div>
+                                    </div>
+                                    <button class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl transition shadow-md shadow-indigo-600/30">
+                                        Join Waiting Room
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 3: AVAILABLE SPECIALISTS -->
+                    <div id="tab-doctors" class="tab-content space-y-4">
+                        <div class="glass-card p-5 rounded-2xl">
+                            <h3 class="text-xs font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                                <i data-lucide="user-check" class="w-4 h-4 text-emerald-400"></i> On-Duty Tele-Consultants
+                            </h3>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="p-4 bg-white/5 rounded-xl border border-white/5 flex items-center justify-between">
+                                    <div>
+                                        <div class="text-xs font-semibold text-slate-100">Dr. Ananya Sharma</div>
+                                        <div class="text-[10px] text-slate-400">Senior Cardiologist • AIIMS Main</div>
+                                        <span class="inline-block mt-2 text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/30">Available Now</span>
+                                    </div>
+                                    <button class="text-xs bg-white/10 hover:bg-white/20 border border-white/10 px-3 py-1.5 rounded-lg text-slate-200 transition">
+                                        Book Call
+                                    </button>
+                                </div>
+                                <div class="p-4 bg-white/5 rounded-xl border border-white/5 flex items-center justify-between">
+                                    <div>
+                                        <div class="text-xs font-semibold text-slate-100">Dr. Vikram Menon</div>
+                                        <div class="text-[10px] text-slate-400">General Physician • AIIMS OPD</div>
+                                        <span class="inline-block mt-2 text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-md border border-amber-500/30">In Session</span>
+                                    </div>
+                                    <button class="text-xs bg-white/10 hover:bg-white/20 border border-white/10 px-3 py-1.5 rounded-lg text-slate-200 transition">
+                                        Book Slot
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TAB 4: SESSION HISTORY -->
+                    <div id="tab-call-history" class="tab-content space-y-4">
+                        <div class="glass-card p-5 rounded-2xl">
+                            <h3 class="text-xs font-semibold text-slate-200 mb-4 flex items-center gap-2">
+                                <i data-lucide="history" class="w-4 h-4 text-purple-400"></i> Past Tele-Consultation Logs
+                            </h3>
+                            <div class="space-y-3">
+                                <div class="p-3.5 bg-white/5 rounded-xl flex items-center justify-between border border-white/5">
+                                    <div>
+                                        <div class="text-xs font-semibold text-slate-200">Routine Checkup - Dr. V. Menon</div>
+                                        <div class="text-[10px] text-slate-400">Aug 10, 2026 • Duration: 18 mins</div>
+                                    </div>
+                                    <button class="text-xs text-indigo-300 bg-indigo-500/20 border border-indigo-500/30 px-3 py-1.5 rounded-lg hover:bg-indigo-500/30 transition flex items-center gap-1.5">
+                                        <i data-lucide="file-text" class="w-3.5 h-3.5"></i> View Summary
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="h-7 bg-slate-950/80 backdrop-blur-md border-t border-white/5 text-[10px] text-slate-500 px-6 flex justify-between items-center z-50">
+        <span>AIIMS Tele-Medicine Network (v4.2)</span>
+        <span>Encrypted WebRTC Tele-Consult Channel</span>
+    </footer>
+
+    <!-- JavaScript Navigation -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // System Clock
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('system-clock').innerText = now.toLocaleDateString('en-US', options);
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Tab Switcher Functionality
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            const target = document.getElementById('tab-' + tabName);
+            if (target) {
+                target.classList.add('active');
+            }
+
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-indigo-600/80', 'text-white', 'shadow-lg', 'shadow-indigo-600/30', 'border', 'border-indigo-400/30');
+                btn.classList.add('text-slate-300');
+            });
+
+            const activeBtn = document.getElementById('btn-' + tabName);
+            if (activeBtn) {
+                activeBtn.classList.add('bg-indigo-600/80', 'text-white', 'shadow-lg', 'shadow-indigo-600/30', 'border', 'border-indigo-400/30');
+                activeBtn.classList.remove('text-slate-300');
+            }
+        }
+    </script>
+</body>
+</html>
