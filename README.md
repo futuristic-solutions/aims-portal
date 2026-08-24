@@ -1,27 +1,25 @@
-#  AIIMS Health OS Portal
+#  AIIMS Health OS (Hospital Management System)
 
-A modern, responsive web portal designed with a **macOS-inspired Desktop UI** for the All India Institute of Medical Sciences (AIIMS). Built using vanilla HTML, Tailwind CSS, Lucide icons, and modern glassmorphism design principles.
-
----
-
-## 📸 Preview & Screenshots
-
-![AIIMS OS Portal Dashboard Preview](https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80)
-
-> *Featured Interface: macOS menu bar, interactive app window, custom glassmorphism sidebar, active metric cards, and a dynamic bottom dock.*
+A futuristic, responsive web dashboard built with a **macOS Desktop Interface** tailored for the AIIMS Health Portal. Designed using HTML5, Tailwind CSS, Lucide icons, and modern glassmorphic UI elements.
 
 ---
 
-## ✨ Features
+## 📸 Interface Preview
 
-- **macOS Desktop Architecture:** Includes top menu bar with a real-time clock, window title controls, and an interactive bottom dock.
-- **Dynamic Tab Switching:**
-  - 📊 **Dashboard:** Real-time health metrics, active OPD token display, and system announcements.
-  - 📅 **Appointments:** Interactive OPD slot booking form with instant token generation.
-  - 🕒 **OPD Schedule:** Department timetable matrix showing consultation hours and block locations.
-  - 📄 **Lab Reports:** Direct download interface for diagnostic test results.
-  - 🚨 **Emergency Services:** Quick action trauma helplines and 24/7 ambulance contacts.
-- **Glassmorphism Design:** Subtle backdrop blurs, translucent panels, and responsive layout across desktop and mobile browsers.
+![AIIMS OS macOS Dashboard Preview](https://cdn.dribbble.com/userupload/46024600/file/6f3169d700aac0d484d5e821e5afeeec.png?resize=752x&vertical=center)
+
+> *Full Desktop View: macOS menu bar, window frame with window control dots, glassmorphism sidebar, active metrics grid, and interactive application dock.*
+
+---
+
+## ✨ Features & Functional Modules
+
+-  **macOS Desktop Architecture:** Top system bar with real-time digital clock, window control headers, and a bottom macOS dock.
+- 📊 **Health Overview Dashboard:** Instant view of token status, medical history summary, pending lab reports, and AIIMS system notices.
+- 📅 **OPD Appointment Booking:** Dynamic booking form with instant token generation and validation feedback.
+- 🕒 **Interactive OPD Schedules:** Clear timetable matrix covering consultation hours and room numbers across major medical departments.
+- 📄 **Diagnostic Lab Reports:** Single-click interface to access and download digital diagnostic records.
+- 🚨 **24/7 Emergency & Trauma Hub:** Quick access to ambulance hotlines, casualty desk contacts, and immediate care services.
 
 ---
 
@@ -34,9 +32,9 @@ A modern, responsive web portal designed with a **macOS-inspired Desktop UI** fo
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Getting Started
 
-1. **Clone the repository:**
+1. **Clone the Repository:**
    ```bash
    git clone [https://github.com/your-username/aims-portal.git](https://github.com/your-username/aims-portal.git)
    cd aims-portal
