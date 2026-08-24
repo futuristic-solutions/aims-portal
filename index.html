@@ -3,27 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AIIMS Health OS</title>
+    <title>AIIMS Health OS - NextGen Clinical Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        .mac-window {
-            background: rgba(255, 255, 255, 0.82);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.08);
+        /* Modern Frosted Glass Theme (Custom Aero Glass) */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.15);
         }
-        .mac-sidebar {
-            background: rgba(240, 240, 245, 0.65);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+        .glass-sidebar {
+            background: rgba(15, 23, 42, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
         }
-        .dock-item {
-            transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .dock-item:hover {
-            transform: scale(1.25) translateY(-8px);
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #f8fafc;
+        }
+        .glass-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 12px rgba(99, 102, 241, 0.35);
         }
         .tab-content {
             display: none;
@@ -31,264 +46,309 @@
         .tab-content.active {
             display: block;
         }
-        /* Custom macOS scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
         ::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 10px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(255, 255, 255, 0.4);
         }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden font-sans select-none bg-cover bg-center flex flex-col justify-between" style="background-image: url('https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=2000&q=80');">
+<body class="h-screen w-screen overflow-hidden font-sans select-none bg-slate-950 text-slate-100 flex flex-col justify-between relative">
 
-    <header class="h-7 bg-white/40 backdrop-blur-md border-b border-white/20 text-slate-900 text-xs px-4 flex justify-between items-center z-50 font-medium">
-        <div class="flex items-center space-x-4">
-            <span class="font-bold cursor-pointer"> AIIMS OS</span>
-            <span class="cursor-pointer hover:opacity-75">File</span>
-            <span class="cursor-pointer hover:opacity-75">Edit</span>
-            <span class="cursor-pointer hover:opacity-75">View</span>
-            <span class="cursor-pointer hover:opacity-75">Services</span>
-            <span class="cursor-pointer hover:opacity-75">Help</span>
+    <div class="absolute top-10 left-10 w-96 h-96 bg-indigo-600/30 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-10 right-10 w-96 h-96 bg-purple-600/25 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[150px] pointer-events-none"></div>
+
+    <header class="h-9 bg-slate-900/60 backdrop-blur-xl border-b border-white/10 text-slate-300 text-xs px-5 flex justify-between items-center z-50 font-medium">
+        <div class="flex items-center space-x-6">
+            <span class="font-bold text-indigo-400 tracking-wide flex items-center gap-2">
+                <i data-lucide="activity" class="w-4 h-4 text-indigo-400"></i> AIIMS HEALTH OS
+            </span>
+            <span class="cursor-pointer hover:text-white transition">Patient Care</span>
+            <span class="cursor-pointer hover:text-white transition">Tele-Consults</span>
+            <span class="cursor-pointer hover:text-white transition">Pharmacy Portal</span>
+            <span class="cursor-pointer hover:text-white transition">ABHA Integration</span>
         </div>
-        <div class="flex items-center space-x-3 text-slate-800">
-            <i data-lucide="wifi" class="w-3.5 h-3.5"></i>
-            <i data-lucide="search" class="w-3.5 h-3.5"></i>
-            <i data-lucide="sliders" class="w-3.5 h-3.5"></i>
-            <span id="mac-clock">Tue Aug 25 10:00 AM</span>
+        <div class="flex items-center space-x-4 text-slate-400">
+            <span class="flex items-center gap-1.5 text-[11px] bg-emerald-500/10 text-emerald-400 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> DB Synchronized
+            </span>
+            <i data-lucide="wifi" class="w-3.5 h-3.5 hover:text-white cursor-pointer"></i>
+            <i data-lucide="bell" class="w-3.5 h-3.5 hover:text-white cursor-pointer"></i>
+            <span id="system-clock" class="text-slate-200 font-semibold">Tue Aug 25 10:00 AM</span>
         </div>
     </header>
 
-    <main class="flex-1 p-4 md:p-8 flex items-center justify-center overflow-hidden">
-        <div class="mac-window w-full max-w-6xl h-full max-h-[780px] rounded-2xl flex flex-col overflow-hidden">
+    <main class="flex-1 p-4 md:p-6 flex items-center justify-center overflow-hidden z-10">
+        <div class="glass-panel w-full max-w-7xl h-full max-h-[820px] rounded-3xl flex flex-col overflow-hidden shadow-2xl">
 
-            <div class="h-12 border-b border-slate-200/60 px-4 flex items-center justify-between shrink-0">
-                <div class="flex items-center space-x-2">
-                    <div class="w-3 h-3 rounded-full bg-red-500 hover:opacity-80 cursor-pointer border border-red-600/30"></div>
-                    <div class="w-3 h-3 rounded-full bg-amber-400 hover:opacity-80 cursor-pointer border border-amber-500/30"></div>
-                    <div class="w-3 h-3 rounded-full bg-emerald-500 hover:opacity-80 cursor-pointer border border-emerald-600/30"></div>
+            <div class="h-14 border-b border-white/10 px-6 flex items-center justify-between shrink-0 bg-slate-900/30">
+                <div class="flex items-center space-x-3">
+                    <div class="w-3 h-3 rounded-full bg-rose-500/80 cursor-pointer border border-rose-400/40 hover:scale-110 transition"></div>
+                    <div class="w-3 h-3 rounded-full bg-amber-500/80 cursor-pointer border border-amber-400/40 hover:scale-110 transition"></div>
+                    <div class="w-3 h-3 rounded-full bg-emerald-500/80 cursor-pointer border border-emerald-400/40 hover:scale-110 transition"></div>
                 </div>
 
-                <div class="text-xs font-semibold text-slate-600 flex items-center space-x-1.5">
-                    <i data-lucide="shield-plus" class="w-4 h-4 text-indigo-600"></i>
-                    <span>AIIMS Central Portal v2.4</span>
+                <div class="text-xs font-medium text-slate-300 flex items-center space-x-2 bg-white/5 px-4 py-1.5 rounded-full border border-white/10">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-indigo-400"></i>
+                    <span>AIIMS Integrated Clinical Command Center (v3.1)</span>
                 </div>
 
-                <div class="flex items-center space-x-2 text-slate-500">
-                    <button class="p-1 rounded hover:bg-slate-200/50 transition"><i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i></button>
-                    <button class="p-1 rounded hover:bg-slate-200/50 transition"><i data-lucide="share" class="w-3.5 h-3.5"></i></button>
+                <div class="flex items-center space-x-3 text-slate-400">
+                    <button class="p-1.5 rounded-lg hover:bg-white/10 transition hover:text-white"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+                    <button class="p-1.5 rounded-lg hover:bg-white/10 transition hover:text-white"><i data-lucide="sliders" class="w-4 h-4"></i></button>
                 </div>
             </div>
 
             <div class="flex-1 flex overflow-hidden">
 
-                <aside class="w-56 mac-sidebar border-r border-slate-200/60 p-3 flex flex-col justify-between shrink-0">
-                    <div class="space-y-4">
-                        <div class="px-2 pt-1">
-                            <h2 class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Navigation</h2>
+                <aside class="w-64 glass-sidebar p-4 flex flex-col justify-between shrink-0">
+                    <div class="space-y-6">
+                        <div>
+                            <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Clinical Modules</p>
+                            <nav class="mt-3 space-y-1.5">
+                                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition bg-indigo-600/80 text-white shadow-lg shadow-indigo-600/30 border border-indigo-400/30">
+                                    <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                                    <span>Dashboard</span>
+                                </button>
+                                <button onclick="switchTab('appointments')" id="btn-appointments" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition text-slate-300 hover:bg-white/10">
+                                    <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+                                    <span>Book OPD Token</span>
+                                </button>
+                                <button onclick="switchTab('opd')" id="btn-opd" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition text-slate-300 hover:bg-white/10">
+                                    <i data-lucide="clock" class="w-4 h-4"></i>
+                                    <span>OPD Matrix</span>
+                                </button>
+                                <button onclick="switchTab('lab')" id="btn-lab" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition text-slate-300 hover:bg-white/10">
+                                    <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                                    <span>Lab Diagnostics</span>
+                                </button>
+                                <button onclick="switchTab('pharmacy')" id="btn-pharmacy" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition text-slate-300 hover:bg-white/10">
+                                    <i data-lucide="pill" class="w-4 h-4"></i>
+                                    <span>E-Prescriptions</span>
+                                </button>
+                                <button onclick="switchTab('emergency')" id="btn-emergency" class="nav-btn w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl font-medium text-xs transition text-rose-400 hover:bg-rose-500/10 hover:text-rose-300">
+                                    <i data-lucide="siren" class="w-4 h-4"></i>
+                                    <span>Emergency Desk</span>
+                                </button>
+                            </nav>
                         </div>
-                        <nav class="space-y-1">
-                            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg font-medium text-xs transition bg-indigo-600 text-white shadow-sm">
-                                <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-                                <span>Dashboard</span>
-                            </button>
-
-                            <button onclick="switchTab('appointments')" id="btn-appointments" class="nav-btn w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg font-medium text-xs transition text-slate-700 hover:bg-slate-200/60">
-                                <i data-lucide="calendar" class="w-4 h-4"></i>
-                                <span>Appointments</span>
-                            </button>
-
-                            <button onclick="switchTab('opd')" id="btn-opd" class="nav-btn w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg font-medium text-xs transition text-slate-700 hover:bg-slate-200/60">
-                                <i data-lucide="clock" class="w-4 h-4"></i>
-                                <span>OPD Schedule</span>
-                            </button>
-
-                            <button onclick="switchTab('lab')" id="btn-lab" class="nav-btn w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg font-medium text-xs transition text-slate-700 hover:bg-slate-200/60">
-                                <i data-lucide="file-text" class="w-4 h-4"></i>
-                                <span>Lab Reports</span>
-                            </button>
-
-                            <button onclick="switchTab('emergency')" id="btn-emergency" class="nav-btn w-full flex items-center space-x-2.5 px-3 py-2 rounded-lg font-medium text-xs transition text-rose-600 hover:bg-rose-100/50">
-                                <i data-lucide="alert-circle" class="w-4 h-4"></i>
-                                <span>Emergency</span>
-                            </button>
-                        </nav>
                     </div>
 
-                    <div class="p-2 bg-white/50 rounded-xl border border-white/60 flex items-center space-x-2">
-                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-white font-bold text-xs flex items-center justify-center">
-                            JD
+                    <div class="p-3 glass-card rounded-2xl flex items-center space-x-3">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-purple-600 text-white font-bold text-xs flex items-center justify-center border border-white/20 shadow-inner">
+                            UA
                         </div>
                         <div class="overflow-hidden">
-                            <p class="text-xs font-bold text-slate-800 truncate">John Doe</p>
-                            <p class="text-[10px] text-slate-500 truncate">UHID: 90823412</p>
+                            <p class="text-xs font-bold text-slate-100 truncate">Usama Ali</p>
+                            <p class="text-[10px] text-indigo-300 font-mono truncate">ABHA: 91-8023-4102</p>
                         </div>
                     </div>
                 </aside>
 
-                <section class="flex-1 p-6 overflow-y-auto bg-white/40">
+                <section class="flex-1 p-6 md:p-8 overflow-y-auto bg-slate-900/20">
 
-                    <div id="tab-dashboard" class="tab-content active space-y-5">
-                        <div class="flex justify-between items-center">
+                    <div id="tab-dashboard" class="tab-content active space-y-6">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <div>
-                                <h1 class="text-2xl font-bold text-slate-800">Health Overview</h1>
-                                <p class="text-xs text-slate-500">Welcome to your AIIMS digital health console.</p>
+                                <h1 class="text-2xl font-bold text-white tracking-tight">Patient Console</h1>
+                                <p class="text-xs text-slate-400 mt-0.5">Overview of active consultations, vitals, and pending diagnostic orders.</p>
                             </div>
-                            <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-full flex items-center gap-1">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Network Active
-                            </span>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div class="p-4 bg-white/70 rounded-xl border border-slate-200/50 shadow-sm">
-                                <p class="text-[11px] font-semibold text-slate-400 uppercase">Upcoming Token</p>
-                                <p class="text-xl font-black text-slate-800 mt-1">Token #A-42</p>
-                                <p class="text-[11px] text-indigo-600 font-medium mt-1">Cardiology • 10:30 AM</p>
-                            </div>
-                            <div class="p-4 bg-white/70 rounded-xl border border-slate-200/50 shadow-sm">
-                                <p class="text-[11px] font-semibold text-slate-400 uppercase">Medical History</p>
-                                <p class="text-xl font-black text-slate-800 mt-1">14 Consults</p>
-                                <p class="text-[11px] text-emerald-600 font-medium mt-1">Last visit 12 days ago</p>
-                            </div>
-                            <div class="p-4 bg-white/70 rounded-xl border border-slate-200/50 shadow-sm">
-                                <p class="text-[11px] font-semibold text-slate-400 uppercase">Pending Labs</p>
-                                <p class="text-xl font-black text-slate-800 mt-1">2 Pending</p>
-                                <p class="text-[11px] text-amber-600 font-medium mt-1">CBC & Blood Sugar</p>
+                            <div class="flex items-center space-x-2 bg-indigo-500/10 px-3 py-1.5 rounded-xl border border-indigo-500/20 text-indigo-300 text-xs">
+                                <i data-lucide="heart-pulse" class="w-4 h-4 animate-bounce"></i>
+                                <span>Vitals Stream Live</span>
                             </div>
                         </div>
 
-                        <div class="p-5 bg-gradient-to-r from-indigo-500/10 to-blue-500/10 rounded-xl border border-indigo-200/50">
-                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
-                                <i data-lucide="bell" class="w-4 h-4 text-indigo-600"></i> AIIMS Delhi Portal Notice
-                            </h3>
-                            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
-                                OPD Online registrations open daily at 08:00 AM for same-day and next-day consultations. Ensure your Ayushman Bharat Digital Account (ABHA) is linked for instant record synchronization.
-                            </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="p-4 glass-card rounded-2xl">
+                                <div class="flex justify-between items-center text-slate-400">
+                                    <span class="text-[11px] font-semibold uppercase tracking-wider">Active Token</span>
+                                    <i data-lucide="ticket" class="w-4 h-4 text-indigo-400"></i>
+                                </div>
+                                <p class="text-2xl font-black text-white mt-2">Token #A-42</p>
+                                <p class="text-[11px] text-indigo-300 font-medium mt-1">Cardiology • Counter 04</p>
+                            </div>
+                            <div class="p-4 glass-card rounded-2xl">
+                                <div class="flex justify-between items-center text-slate-400">
+                                    <span class="text-[11px] font-semibold uppercase tracking-wider">Queue Position</span>
+                                    <i data-lucide="users" class="w-4 h-4 text-amber-400"></i>
+                                </div>
+                                <p class="text-2xl font-black text-white mt-2">03 Ahead</p>
+                                <p class="text-[11px] text-amber-300 font-medium mt-1">Est. Wait: ~18 mins</p>
+                            </div>
+                            <div class="p-4 glass-card rounded-2xl">
+                                <div class="flex justify-between items-center text-slate-400">
+                                    <span class="text-[11px] font-semibold uppercase tracking-wider">Blood Pressure</span>
+                                    <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i>
+                                </div>
+                                <p class="text-2xl font-black text-white mt-2">120 / 80</p>
+                                <p class="text-[11px] text-emerald-400 font-medium mt-1">Optimal Range</p>
+                            </div>
+                            <div class="p-4 glass-card rounded-2xl">
+                                <div class="flex justify-between items-center text-slate-400">
+                                    <span class="text-[11px] font-semibold uppercase tracking-wider">Pending Labs</span>
+                                    <i data-lucide="flask-conical" class="w-4 h-4 text-purple-400"></i>
+                                </div>
+                                <p class="text-2xl font-black text-white mt-2">2 Reports</p>
+                                <p class="text-[11px] text-purple-300 font-medium mt-1">CBC & Lipid Profile</p>
+                            </div>
+                        </div>
+
+                        <div class="p-5 glass-card rounded-2xl border-l-4 border-l-indigo-500 flex items-start space-x-4">
+                            <i data-lucide="info" class="w-5 h-5 text-indigo-400 shrink-0 mt-0.5"></i>
+                            <div class="space-y-1">
+                                <h3 class="font-bold text-slate-200 text-xs">AIIMS Digital Integration Notice</h3>
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    Same-day OPD registrations reset daily at 08:00 AM. Ensure your linked ABHA identity card is verified before approaching consultation counters.
+                                </p>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="tab-appointments" class="tab-content space-y-5">
-                        <h1 class="text-2xl font-bold text-slate-800">Book OPD Appointment</h1>
-                        <p class="text-xs text-slate-500">Select department and preferred slot.</p>
+                    <div id="tab-appointments" class="tab-content space-y-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-white tracking-tight">OPD Token Generation</h1>
+                            <p class="text-xs text-slate-400 mt-0.5">Schedule an outpatient consultation across AIIMS network centers.</p>
+                        </div>
 
-                        <form id="booking-form" onsubmit="handleBooking(event)" class="bg-white/70 p-5 rounded-xl border border-slate-200/60 shadow-sm space-y-4">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <form id="booking-form" onsubmit="handleBooking(event)" class="glass-card p-6 rounded-2xl space-y-5">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-1">AIIMS Campus</label>
-                                    <select required class="w-full bg-slate-100/80 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                        <option value="">Select Location</option>
-                                        <option>AIIMS New Delhi</option>
-                                        <option>AIIMS Rishikesh</option>
-                                        <option>AIIMS Bhubaneswar</option>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-2">AIIMS Campus</label>
+                                    <select required class="w-full glass-input rounded-xl p-3 text-xs focus:outline-none">
+                                        <option value="" class="bg-slate-900">Select Campus</option>
+                                        <option class="bg-slate-900">AIIMS New Delhi (Main Campus)</option>
+                                        <option class="bg-slate-900">AIIMS Rishikesh</option>
+                                        <option class="bg-slate-900">AIIMS Bhubaneswar</option>
+                                        <option class="bg-slate-900">AIIMS Jodhpur</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-1">Department</label>
-                                    <select required class="w-full bg-slate-100/80 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                        <option value="">Select Specialty</option>
-                                        <option>Cardiology</option>
-                                        <option>Neurology</option>
-                                        <option>Orthopedics</option>
-                                        <option>Pediatrics</option>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Specialty Department</label>
+                                    <select required class="w-full glass-input rounded-xl p-3 text-xs focus:outline-none">
+                                        <option value="" class="bg-slate-900">Select Specialty</option>
+                                        <option class="bg-slate-900">Cardiology & Cardiac Surgery</option>
+                                        <option class="bg-slate-900">Neurology & Neurosurgery</option>
+                                        <option class="bg-slate-900">Orthopedics & Joint Replacement</option>
+                                        <option class="bg-slate-900">Gastroenterology</option>
+                                        <option class="bg-slate-900">Endocrinology & Metabolism</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-1">Preferred Date</label>
-                                    <input type="date" required class="w-full bg-slate-100/80 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Consultation Date</label>
+                                    <input type="date" required class="w-full glass-input rounded-xl p-3 text-xs focus:outline-none">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-600 mb-1">Patient Phone Number</label>
-                                    <input type="tel" placeholder="+91 98765 43210" required class="w-full bg-slate-100/80 border border-slate-200 rounded-lg p-2.5 text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Registered Contact Number</label>
+                                    <input type="tel" placeholder="+91 98765 43210" required class="w-full glass-input rounded-xl p-3 text-xs focus:outline-none">
                                 </div>
                             </div>
-                            <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs px-5 py-2.5 rounded-lg transition shadow-sm">
-                                Generate Token
-                            </button>
+                            <div class="pt-2">
+                                <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs px-6 py-3 rounded-xl transition shadow-lg shadow-indigo-600/30 border border-indigo-400/30 flex items-center space-x-2">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+                                    <span>Confirm & Generate Digital Token</span>
+                                </button>
+                            </div>
                         </form>
 
-                        <div id="booking-alert" class="hidden p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-800 text-xs font-medium flex items-center space-x-2">
-                            <i data-lucide="check-circle" class="w-4 h-4 text-emerald-600"></i>
-                            <span>Appointment Slot Confirmed! Booking ID: AIIMS-DEL-89231</span>
+                        <div id="booking-alert" class="hidden p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl text-emerald-300 text-xs font-medium flex items-center space-x-3">
+                            <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400 shrink-0"></i>
+                            <span>Token Allocated! Booking Reference: <strong>AIIMS-DEL-89231</strong>. Confirmation SMS sent.</span>
                         </div>
                     </div>
 
-                    <div id="tab-opd" class="tab-content space-y-5">
-                        <h1 class="text-2xl font-bold text-slate-800">Department Schedules</h1>
-                        <p class="text-xs text-slate-500">Weekly availability matrix for major OPD units.</p>
+                    <div id="tab-opd" class="tab-content space-y-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-white tracking-tight">Department Schedule Matrix</h1>
+                            <p class="text-xs text-slate-400 mt-0.5">Real-time availability timetable for primary and specialty clinics.</p>
+                        </div>
 
-                        <div class="bg-white/70 rounded-xl border border-slate-200/60 overflow-hidden shadow-sm">
+                        <div class="glass-card rounded-2xl overflow-hidden">
                             <table class="w-full text-left text-xs">
-                                <thead class="bg-slate-100/80 text-slate-600 font-bold border-b border-slate-200/60">
+                                <thead class="bg-white/5 text-slate-300 font-semibold border-b border-white/10">
                                     <tr>
-                                        <th class="p-3">Specialty</th>
-                                        <th class="p-3">Operating Days</th>
-                                        <th class="p-3">OPD Hours</th>
-                                        <th class="p-3">Room / Block</th>
+                                        <th class="p-4">Department / Specialty</th>
+                                        <th class="p-4">Consultant In-Charge</th>
+                                        <th class="p-4">Days</th>
+                                        <th class="p-4">Hours</th>
+                                        <th class="p-4">Location</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-200/40 text-slate-700">
-                                    <tr class="hover:bg-slate-50/50">
-                                        <td class="p-3 font-semibold">Cardiology</td>
-                                        <td class="p-3">Mon, Wed, Fri</td>
-                                        <td class="p-3">08:30 AM - 01:30 PM</td>
-                                        <td class="p-3">Block A, Room 102</td>
+                                <tbody class="divide-y divide-white/5 text-slate-300">
+                                    <tr class="hover:bg-white/5">
+                                        <td class="p-4 font-semibold text-white">Cardiology</td>
+                                        <td class="p-4">Dr. S. K. Gupta</td>
+                                        <td class="p-4">Mon, Wed, Fri</td>
+                                        <td class="p-4">08:30 AM - 01:30 PM</td>
+                                        <td class="p-4 text-indigo-300">Block A, OPD 102</td>
                                     </tr>
-                                    <tr class="hover:bg-slate-50/50">
-                                        <td class="p-3 font-semibold">Neurology</td>
-                                        <td class="p-3">Tue, Thu, Sat</td>
-                                        <td class="p-3">09:00 AM - 02:00 PM</td>
-                                        <td class="p-3">Block B, Room 205</td>
+                                    <tr class="hover:bg-white/5">
+                                        <td class="p-4 font-semibold text-white">Neurology</td>
+                                        <td class="p-4">Dr. Ananya Ray</td>
+                                        <td class="p-4">Tue, Thu, Sat</td>
+                                        <td class="p-4">09:00 AM - 02:00 PM</td>
+                                        <td class="p-4 text-indigo-300">Block B, OPD 205</td>
                                     </tr>
-                                    <tr class="hover:bg-slate-50/50">
-                                        <td class="p-3 font-semibold">Gastroenterology</td>
-                                        <td class="p-3">Mon through Sat</td>
-                                        <td class="p-3">08:00 AM - 01:00 PM</td>
-                                        <td class="p-3">Block C, Room 12</td>
+                                    <tr class="hover:bg-white/5">
+                                        <td class="p-4 font-semibold text-white">Gastroenterology</td>
+                                        <td class="p-4">Dr. R. V. Sharma</td>
+                                        <td class="p-4">Mon through Sat</td>
+                                        <td class="p-4">08:00 AM - 01:00 PM</td>
+                                        <td class="p-4 text-indigo-300">Block C, OPD 12</td>
                                     </tr>
-                                    <tr class="hover:bg-slate-50/50">
-                                        <td class="p-3 font-semibold">Oncology</td>
-                                        <td class="p-3">Mon, Thu</td>
-                                        <td class="p-3">10:00 AM - 04:00 PM</td>
-                                        <td class="p-3">DRBRAIR Block</td>
+                                    <tr class="hover:bg-white/5">
+                                        <td class="p-4 font-semibold text-white">Medical Oncology</td>
+                                        <td class="p-4">Dr. P. K. Mehta</td>
+                                        <td class="p-4">Mon, Thu</td>
+                                        <td class="p-4">10:00 AM - 04:00 PM</td>
+                                        <td class="p-4 text-indigo-300">DRBRAIR Cancer Center</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
 
-                    <div id="tab-lab" class="tab-content space-y-5">
-                        <h1 class="text-2xl font-bold text-slate-800">Diagnostic Reports</h1>
-                        <p class="text-xs text-slate-500">Download digitally signed official laboratory records.</p>
+                    <div id="tab-lab" class="tab-content space-y-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-white tracking-tight">Diagnostic Records</h1>
+                            <p class="text-xs text-slate-400 mt-0.5">Digitally verified medical lab findings and radiologic scans.</p>
+                        </div>
 
-                        <div class="space-y-3">
-                            <div class="p-4 bg-white/70 rounded-xl border border-slate-200/60 shadow-sm flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <div class="p-2.5 bg-blue-500/10 text-blue-600 rounded-lg"><i data-lucide="file-check" class="w-5 h-5"></i></div>
+                        <div class="grid grid-cols-1 gap-3">
+                            <div class="p-4 glass-card rounded-2xl flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="p-3 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-xl">
+                                        <i data-lucide="file-check" class="w-5 h-5"></i>
+                                    </div>
                                     <div>
-                                        <p class="font-bold text-slate-800 text-xs">Thyroid Function Test (T3, T4, TSH)</p>
-                                        <p class="text-[10px] text-slate-500">Date: Aug 20, 2026 • Ref: LAB-90823</p>
+                                        <p class="font-bold text-white text-xs">Comprehensive Thyroid Panel (T3, T4, TSH)</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5">Collected: Aug 20, 2026 • Ref: LAB-90823 • Verified</p>
                                     </div>
                                 </div>
-                                <button onclick="alert('Downloading Diagnostic PDF...')" class="px-3 py-1.5 bg-slate-200/60 hover:bg-slate-200 text-slate-800 rounded-lg font-semibold text-xs flex items-center space-x-1 transition">
+                                <button onclick="alert('Downloading Sealed Diagnostic PDF...')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold flex items-center space-x-2 transition border border-white/10">
                                     <i data-lucide="download" class="w-3.5 h-3.5"></i>
                                     <span>Download</span>
                                 </button>
                             </div>
 
-                            <div class="p-4 bg-white/70 rounded-xl border border-slate-200/60 shadow-sm flex items-center justify-between">
-                                <div class="flex items-center space-x-3">
-                                    <div class="p-2.5 bg-blue-500/10 text-blue-600 rounded-lg"><i data-lucide="file-check" class="w-5 h-5"></i></div>
+                            <div class="p-4 glass-card rounded-2xl flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="p-3 bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 rounded-xl">
+                                        <i data-lucide="file-check" class="w-5 h-5"></i>
+                                    </div>
                                     <div>
-                                        <p class="font-bold text-slate-800 text-xs">Chest X-Ray Digital Copy</p>
-                                        <p class="text-[10px] text-slate-500">Date: Jul 11, 2026 • Ref: RAD-10923</p>
+                                        <p class="font-bold text-white text-xs">High-Resolution Chest X-Ray (PA View)</p>
+                                        <p class="text-[10px] text-slate-400 mt-0.5">Collected: Jul 11, 2026 • Ref: RAD-10923 • Verified</p>
                                     </div>
                                 </div>
-                                <button onclick="alert('Downloading Diagnostic PDF...')" class="px-3 py-1.5 bg-slate-200/60 hover:bg-slate-200 text-slate-800 rounded-lg font-semibold text-xs flex items-center space-x-1 transition">
+                                <button onclick="alert('Downloading Sealed Diagnostic PDF...')" class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl text-xs font-semibold flex items-center space-x-2 transition border border-white/10">
                                     <i data-lucide="download" class="w-3.5 h-3.5"></i>
                                     <span>Download</span>
                                 </button>
@@ -296,27 +356,62 @@
                         </div>
                     </div>
 
-                    <div id="tab-emergency" class="tab-content space-y-5">
-                        <div class="p-5 bg-rose-500/10 border border-rose-500/30 rounded-xl space-y-3">
-                            <div class="flex items-center space-x-3">
-                                <div class="p-2.5 bg-rose-600 text-white rounded-xl">
-                                    <i data-lucide="siren" class="w-6 h-6"></i>
-                                </div>
+                    <div id="tab-pharmacy" class="tab-content space-y-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-white tracking-tight">E-Prescriptions</h1>
+                            <p class="text-xs text-slate-400 mt-0.5">Active medication regimens and pharmacy dispatch logs.</p>
+                        </div>
+
+                        <div class="glass-card p-5 rounded-2xl space-y-4">
+                            <div class="border-b border-white/10 pb-3 flex justify-between items-center">
                                 <div>
-                                    <h2 class="text-lg font-bold text-rose-900">Emergency & Trauma Hotline</h2>
-                                    <p class="text-xs text-rose-700">Immediate dispatch & emergency desk routing.</p>
+                                    <p class="text-xs font-bold text-white">Prescription #Rx-88219</p>
+                                    <p class="text-[10px] text-slate-400">Issued by Dr. S. K. Gupta (Cardiology)</p>
+                                </div>
+                                <span class="px-2.5 py-1 bg-indigo-500/20 text-indigo-300 text-[10px] font-semibold rounded-full border border-indigo-500/30">Active Regimen</span>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center text-xs">
+                                    <div>
+                                        <p class="font-semibold text-slate-200">Atorvastatin 10mg</p>
+                                        <p class="text-[10px] text-slate-400">Oral • Once Daily (Night)</p>
+                                    </div>
+                                    <span class="text-slate-400 font-mono text-[11px]">30 Days Supply</span>
+                                </div>
+                                <div class="flex justify-between items-center text-xs">
+                                    <div>
+                                        <p class="font-semibold text-slate-200">Amlodipine 5mg</p>
+                                        <p class="text-[10px] text-slate-400">Oral • Once Daily (Morning)</p>
+                                    </div>
+                                    <span class="text-slate-400 font-mono text-[11px]">30 Days Supply</span>
                                 </div>
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                                <div class="bg-white/80 p-3.5 rounded-xl border border-rose-200/60">
-                                    <p class="text-[10px] uppercase font-bold text-rose-500">National Ambulance Service</p>
-                                    <p class="text-2xl font-black text-slate-800 my-0.5">102 / 108</p>
-                                    <p class="text-[10px] text-slate-500">24x7 Direct Dispatch Line</p>
+                        </div>
+                    </div>
+
+                    <div id="tab-emergency" class="tab-content space-y-6">
+                        <div class="p-6 bg-rose-500/10 border border-rose-500/30 rounded-2xl space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="p-3 bg-rose-600 text-white rounded-2xl shadow-lg shadow-rose-600/30">
+                                    <i data-lucide="siren" class="w-6 h-6 animate-pulse"></i>
                                 </div>
-                                <div class="bg-white/80 p-3.5 rounded-xl border border-rose-200/60">
-                                    <p class="text-[10px] uppercase font-bold text-rose-500">AIIMS Trauma Desk</p>
-                                    <p class="text-xl font-black text-slate-800 my-0.5">+91 11 2659 8800</p>
-                                    <p class="text-[10px] text-slate-500">Direct Casualty Control Room</p>
+                                <div>
+                                    <h2 class="text-lg font-bold text-rose-200">Emergency & Trauma Hotline</h2>
+                                    <p class="text-xs text-rose-300/80">Immediate ambulance dispatch and centralized critical care desk.</p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                <div class="glass-card p-4 rounded-xl border-rose-500/20">
+                                    <p class="text-[10px] uppercase font-bold text-rose-400">National Ambulance Service</p>
+                                    <p class="text-3xl font-black text-white my-1">102 / 108</p>
+                                    <p class="text-[10px] text-slate-400">24x7 Direct Dispatch Line</p>
+                                </div>
+                                <div class="glass-card p-4 rounded-xl border-rose-500/20">
+                                    <p class="text-[10px] uppercase font-bold text-rose-400">AIIMS Trauma Desk</p>
+                                    <p class="text-2xl font-black text-white my-1">+91 11 2659 8800</p>
+                                    <p class="text-[10px] text-slate-400">Direct Casualty Control Room</p>
                                 </div>
                             </div>
                         </div>
@@ -327,22 +422,25 @@
         </div>
     </main>
 
-    <footer class="mb-3 flex justify-center z-50">
-        <div class="bg-white/30 backdrop-blur-xl border border-white/40 p-2 rounded-2xl flex items-center space-x-3 shadow-2xl">
-            <button onclick="switchTab('dashboard')" title="Dashboard" class="dock-item p-2.5 bg-gradient-to-tr from-blue-500 to-indigo-600 text-white rounded-xl shadow-md">
-                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+    <footer class="mb-4 flex justify-center z-50">
+        <div class="bg-slate-900/60 backdrop-blur-2xl border border-white/15 p-2 rounded-2xl flex items-center space-x-3 shadow-2xl">
+            <button onclick="switchTab('dashboard')" title="Dashboard" class="p-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow-lg transition hover:-translate-y-1">
+                <i data-lucide="layout-grid" class="w-5 h-5"></i>
             </button>
-            <button onclick="switchTab('appointments')" title="Appointments" class="dock-item p-2.5 bg-gradient-to-tr from-emerald-500 to-teal-600 text-white rounded-xl shadow-md">
-                <i data-lucide="calendar" class="w-5 h-5"></i>
+            <button onclick="switchTab('appointments')" title="Appointments" class="p-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl shadow-lg transition hover:-translate-y-1">
+                <i data-lucide="calendar-plus" class="w-5 h-5"></i>
             </button>
-            <button onclick="switchTab('opd')" title="OPD Timetable" class="dock-item p-2.5 bg-gradient-to-tr from-amber-500 to-orange-600 text-white rounded-xl shadow-md">
+            <button onclick="switchTab('opd')" title="OPD Timetable" class="p-3 bg-amber-600 hover:bg-amber-500 text-white rounded-xl shadow-lg transition hover:-translate-y-1">
                 <i data-lucide="clock" class="w-5 h-5"></i>
             </button>
-            <button onclick="switchTab('lab')" title="Lab Reports" class="dock-item p-2.5 bg-gradient-to-tr from-purple-500 to-pink-600 text-white rounded-xl shadow-md">
-                <i data-lucide="file-text" class="w-5 h-5"></i>
+            <button onclick="switchTab('lab')" title="Lab Reports" class="p-3 bg-purple-600 hover:bg-purple-500 text-white rounded-xl shadow-lg transition hover:-translate-y-1">
+                <i data-lucide="file-spreadsheet" class="w-5 h-5"></i>
             </button>
-            <button onclick="switchTab('emergency')" title="Emergency Services" class="dock-item p-2.5 bg-gradient-to-tr from-red-500 to-rose-600 text-white rounded-xl shadow-md">
-                <i data-lucide="alert-circle" class="w-5 h-5"></i>
+            <button onclick="switchTab('pharmacy')" title="E-Prescriptions" class="p-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl shadow-lg transition hover:-translate-y-1">
+                <i data-lucide="pill" class="w-5 h-5"></i>
+            </button>
+            <button onclick="switchTab('emergency')" title="Emergency Desk" class="p-3 bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-lg transition hover:-translate-y-1">
+                <i data-lucide="siren" class="w-5 h-5"></i>
             </button>
         </div>
     </footer>
@@ -351,43 +449,39 @@
         // Initialize Lucide Icons
         lucide.createIcons();
 
-        // Real-Time macOS System Clock Update
+        // System Clock Update
         function updateClock() {
             const now = new Date();
             const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-            document.getElementById('mac-clock').innerText = now.toLocaleDateString('en-US', options);
+            document.getElementById('system-clock').innerText = now.toLocaleDateString('en-US', options);
         }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // macOS Tab Switching Function
+        // Tab Navigation Switcher
         function switchTab(tabName) {
-            // Hide all tab views
             const tabs = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => tab.classList.remove('active'));
 
-            // Show target tab
             const target = document.getElementById('tab-' + tabName);
             if (target) {
                 target.classList.add('active');
             }
 
-            // Reset sidebar buttons selection
             const buttons = document.querySelectorAll('.nav-btn');
             buttons.forEach(btn => {
-                btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
-                btn.classList.add('text-slate-700');
+                btn.classList.remove('bg-indigo-600/80', 'text-white', 'shadow-lg', 'shadow-indigo-600/30', 'border', 'border-indigo-400/30');
+                btn.classList.add('text-slate-300');
             });
 
-            // Set active button state
             const activeBtn = document.getElementById('btn-' + tabName);
             if (activeBtn && tabName !== 'emergency') {
-                activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
-                activeBtn.classList.remove('text-slate-700');
+                activeBtn.classList.add('bg-indigo-600/80', 'text-white', 'shadow-lg', 'shadow-indigo-600/30', 'border', 'border-indigo-400/30');
+                activeBtn.classList.remove('text-slate-300');
             }
         }
 
-        // Handle Appointment Booking Submission
+        // Form Submission Handler
         function handleBooking(event) {
             event.preventDefault();
             const alertBox = document.getElementById('booking-alert');
